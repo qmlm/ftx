@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, use } from "react"
 import { supabase, type Game, type Player, type GameEvent } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
+import { useGameAudio } from "@/hooks/useGameAudio"
 
 export default function PlayPage({ params }: { params: Promise<{ gameId: string }> }) {
   const { gameId } = use(params)
@@ -22,6 +23,9 @@ export default function PlayPage({ params }: { params: Promise<{ gameId: string 
   const [screenShake, setScreenShake] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [pauseMessage, setPauseMessage] = useState("")
+
+  // Play background music when game starts
+  useGameAudio(game?.status === "playing", "/game-music.mp3")
 
   const fetchGame = useCallback(async () => {
     const { data } = await supabase.from("games").select().eq("id", gameId).single()

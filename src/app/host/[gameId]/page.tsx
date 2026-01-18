@@ -5,6 +5,7 @@ import { supabase, type Game, type Player, type GameEvent } from "@/lib/supabase
 import { Button } from "@/components/ui/button"
 import { QRCodeSVG } from "qrcode.react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useGameAudio } from "@/hooks/useGameAudio"
 
 const FTX_MESSAGES = [
   "Yield is up! Your funds are SAFU!",
@@ -42,6 +43,9 @@ export default function HostPage({ params }: { params: Promise<{ gameId: string 
   const [screenShake, setScreenShake] = useState(false)
   const [totalVault, setTotalVault] = useState(0)
   const [withdrawnPlayers, setWithdrawnPlayers] = useState(0)
+
+  // Play background music when game starts
+  useGameAudio(game?.status === "playing", "/game-music.mp3")
 
   const fetchGame = useCallback(async () => {
     const { data } = await supabase.from("games").select().eq("id", gameId).single()
